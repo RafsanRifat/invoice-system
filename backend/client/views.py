@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.parsers import JSONParser
 
@@ -7,8 +8,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 
-# Create your views here.
-
+# Client List and create client
 @api_view(['GET', 'POST'])
 def client(request):
     if request.method == 'POST':
@@ -22,6 +22,29 @@ def client(request):
     return Response(clients.data)
 
 
+# Client Detail, Update And Delete
+@api_view(['GET', 'PUT', 'DELETE'])
+def client_detail(request, pk):
+    client = Clients.objects.get(id=pk)
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serilizer = Clientsserializer(client, data=data)
+        if serilizer.is_valid():
+            serilizer.save()
+            return Response({"Message": "You have successfully updated the client"})
+        else:
+            return Response({"Message": "Somethins"})
+    elif request.method == 'DELETE':
+        client.delete()
+        return Response({"Message": "The client has deleted"})
+    client = Clients.objects.get(id=pk)
+    print(client)
+    client = Clientsserializer(client)
+
+    return Response(client.data)
+
+
+# Item list and create Items
 @api_view(['GET', 'POST'])
 def item_list(request):
     if request.method == 'POST':
@@ -35,6 +58,7 @@ def item_list(request):
     return Response(items.data)
 
 
+# Invoice List and Create Invoice
 @api_view(['GET', 'POST'])
 def invoice_list(request):
     if request.method == 'POST':
@@ -48,19 +72,4 @@ def invoice_list(request):
     return Response(invoices.data)
 
 
-@api_view(['GET', 'PUT'])
-def client_detail(request, pk):
-    client = Clients.objects.get(id=pk)
-    if request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serilizer = Clientsserializer(client, data=data)
-        if serilizer.is_valid():
-            serilizer.save()
-            return Response({"Message": "You have successfully updated the client"})
-        else:
-            return Response({"Message": "Somethins"})
-    client = Clients.objects.get(id=pk)
-    print(client)
-    client = Clientsserializer(client)
 
-    return Response(client.data)
