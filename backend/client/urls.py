@@ -16,6 +16,7 @@ urlpatterns = [
 
 Clients list        ------------->>>   http://localhost:8000/api/clients
 Items list          ------------->>>   http://localhost:8000/api/items
+Items Detail        ------------->>>   http://localhost:8000/api/item/<item_id>
 Client Invoice list ------------->>>   http://localhost:8000/api/invoice/<Client_id>
 Invoice Detail      ------------->>>   http://localhost:8000/api/invoice_detail/<invoice_id>
 Client Detail       ------------->>>   http://localhost:8000/api/clients/<Client_id>
