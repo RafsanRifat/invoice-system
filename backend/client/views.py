@@ -44,3 +44,12 @@ def invoice_list(request):
     invoices = Invoices.objects.all()
     invoices = InvoiceSerilizer(invoices, many=True)
     return Response(invoices.data)
+
+
+@api_view(['GET', 'POST'])
+def client_detail(request, pk):
+    client = Clients.objects.get(id=pk)
+    print(client)
+    client = Clientsserializer(client)
+
+    return Response(client.data)
