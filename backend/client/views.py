@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from rest_framework.parsers import JSONParser
+
 from .models import Clients, Invoices, Items
 from .serializers import Clientsserializer, ItemsSerializer, InvoiceSerilizer
 from rest_framework.response import Response
@@ -46,8 +48,17 @@ def invoice_list(request):
     return Response(invoices.data)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'PUT'])
 def client_detail(request, pk):
+    client = Clients.objects.get(id=pk)
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serilizer = Clientsserializer(client, data=data)
+        if serilizer.is_valid():
+            serilizer.save()
+            return Response({"Message": "You have successfully updated the client"})
+        else:
+            return Response({"Message": "Somethins"})
     client = Clients.objects.get(id=pk)
     print(client)
     client = Clientsserializer(client)
