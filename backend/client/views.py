@@ -68,9 +68,12 @@ def invoice_detail(request, invoice_id):
         serilizer = InvoiceSerilizer(invoice, data=data)
         if serilizer.is_valid():
             serilizer.save()
-            return Response({"":"Successfully updated"})
+            return Response({"": "Successfully updated"})
         else:
             return Response({"message": "Something went wrong"})
+    elif request.method == 'DELETE':
+        invoice.delete()
+        return Response({"Message": "Item Deleted Successfully"})
     invoice = Invoices.objects.get(id=invoice_id)
     invoice_detail = InvoiceSerilizer(invoice)
     return Response(invoice_detail.data)
