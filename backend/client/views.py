@@ -91,3 +91,23 @@ def item_list(request):
     items = Items.objects.all()
     items = ItemsSerializer(items, many=True)
     return Response(items.data)
+
+
+# Item Detail, Edit, delete
+@api_view(['GET', 'PUT', 'DELETE'])
+def item_detail(request, item_id):
+    item = Items.objects.get(id=item_id)
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = ItemsSerializer(item, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"Message": "Your Item updated sucessfully"})
+        else:
+            return Response({"Message": "Something went wrong !"})
+    elif request.method == 'DELETE':
+        item.delete()
+        return Response({"Message": "Item Deleted !!!"})
+
+    item_details = ItemsSerializer(item)
+    return Response(item_details.data)
