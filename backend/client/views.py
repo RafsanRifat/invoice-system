@@ -38,7 +38,6 @@ def client_detail(request, pk):
         client.delete()
         return Response({"Message": "The client has deleted"})
     client = Clients.objects.get(id=pk)
-    print(client)
     client = Clientsserializer(client)
 
     return Response(client.data)
@@ -46,7 +45,7 @@ def client_detail(request, pk):
 
 # Client invoice
 @api_view(['GET', 'POST'])
-def client_invoice(request, pk):
+def client_invoice(request, client_id):
     if request.method == 'POST':
         serilizer = InvoiceSerilizer(data=request.data)
         if serilizer.is_valid():
@@ -54,10 +53,27 @@ def client_invoice(request, pk):
             return Response(serilizer.data)
         else:
             return Response({"message": "Something went wrong"})
-    client = Clients.objects.get(id=pk)
+    client = Clients.objects.get(id=client_id)
     invoice = client.invoices_set.all()
     serilizer = InvoiceSerilizer(invoice, many=True)
     return Response(serilizer.data)
+
+
+# Invoice detail, edit, delete
+@api_view(['GET', 'Put', 'DELETE'])
+def invoice_detail(request, invoice_id):
+    invoice = Invoices.objects.get(id=invoice_id)
+    if request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serilizer = InvoiceSerilizer(invoice, data=data)
+        if serilizer.is_valid():
+            serilizer.save()
+            return Response({"":"Successfully updated"})
+        else:
+            return Response({"message": "Something went wrong"})
+    invoice = Invoices.objects.get(id=invoice_id)
+    invoice_detail = InvoiceSerilizer(invoice)
+    return Response(invoice_detail.data)
 
 
 # Item list and create Items
@@ -72,17 +88,3 @@ def item_list(request):
     items = Items.objects.all()
     items = ItemsSerializer(items, many=True)
     return Response(items.data)
-
-
-# Invoice List and Create Invoice
-@api_view(['GET', 'POST'])
-def invoice_list(request):
-    if request.method == 'POST':
-        serilizer = InvoiceSerilizer(data=request.data)
-        if serilizer.is_valid():
-            serilizer.save()
-        else:
-            return Response({"Message": "Something went wrong"})
-    invoices = Invoices.objects.all()
-    invoices = InvoiceSerilizer(invoices, many=True)
-    return Response(invoices.data)
