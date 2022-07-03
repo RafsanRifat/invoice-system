@@ -44,6 +44,22 @@ def client_detail(request, pk):
     return Response(client.data)
 
 
+# Client invoice
+@api_view(['GET', 'POST'])
+def client_invoice(request, pk):
+    if request.method == 'POST':
+        serilizer = InvoiceSerilizer(data=request.data)
+        if serilizer.is_valid():
+            serilizer.save()
+            return Response(serilizer.data)
+        else:
+            return Response({"message": "Something went wrong"})
+    client = Clients.objects.get(id=pk)
+    invoice = client.invoices_set.all()
+    serilizer = InvoiceSerilizer(invoice, many=True)
+    return Response(serilizer.data)
+
+
 # Item list and create Items
 @api_view(['GET', 'POST'])
 def item_list(request):
@@ -70,6 +86,3 @@ def invoice_list(request):
     invoices = Invoices.objects.all()
     invoices = InvoiceSerilizer(invoices, many=True)
     return Response(invoices.data)
-
-
-
