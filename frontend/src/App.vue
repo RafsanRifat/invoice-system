@@ -1,9 +1,9 @@
 <template>
-<!--  <nav>-->
-<!--    <router-link to="/">Home</router-link> |-->
-<!--    <router-link to="/about">About</router-link>-->
-<!--    <button class="btn btn-primary">Button</button>-->
-<!--  </nav>-->
+  <nav>
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link>
+    <button @click="data" class="btn btn-primary">Button</button>
+  </nav>
   <router-view/>
 </template>
 
